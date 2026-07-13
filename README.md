@@ -4,7 +4,7 @@ Language identity and metadata for Swift editor tooling.
 
 LanguageKit is a small, Foundation-only package that answers one question well:
 **"what language is this?"** It is the shared source of truth for the language
-catalog used across CodeEditorPlugin, DiagramKit, and RepoPrompt.
+catalog used across CodeEditorPlugin and RepoPrompt.
 
 It carries *identity and detection metadata only* — no highlight styles, no
 completion, no snippets, no LSP client construction, no tree-sitter query
