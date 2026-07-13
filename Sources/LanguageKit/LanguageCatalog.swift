@@ -73,6 +73,11 @@ import Foundation
 public enum LanguageCatalog {
     /// Every registered language, in a stable declaration order (CodeEditorPlugin's
     /// original order, with ``LanguageID/tsx`` inserted next to TypeScript).
+    ///
+    /// Each language's ``LanguageMetadata/fileExtensions`` is ordered: the first
+    /// element is the canonical / primary extension (matching CodeEditorPlugin's
+    /// deliberate ordering and RepoPrompt's `canonicalFileExtension` for its 14
+    /// languages), the rest are recognized aliases.
     public static let all: [LanguageMetadata] = [
         LanguageMetadata(
             id: .swift, displayName: "Swift",
@@ -257,54 +262,17 @@ public enum LanguageCatalog {
         ),
     ]
 
-    // MARK: - Indexes
-
-    /// Identity index: ``LanguageID`` to its metadata.
-    private static let byID: [LanguageID: LanguageMetadata] = {
-        Dictionary(uniqueKeysWithValues: all.map { ($0.id, $0) })
-    }()
-
-    /// Extension index (lowercase, dotless) to metadata. Every extension is
-    /// unique across the catalog, so `uniqueKeysWithValues` is safe.
-    private static let byExtension: [String: LanguageMetadata] = {
-        var map: [String: LanguageMetadata] = [:]
-        for language in all {
-            for ext in language.fileExtensions {
-                map[ext] = language
-            }
-        }
-        return map
-    }()
-
-    /// Whole-filename index (lowercase) to metadata.
-    private static let byFilename: [String: LanguageMetadata] = {
-        var map: [String: LanguageMetadata] = [:]
-        for language in all {
-            for name in language.filenames {
-                map[name] = language
-            }
-        }
-        return map
-    }()
-
-    /// Interpreter index (lowercase) to metadata.
-    private static let byInterpreter: [String: LanguageMetadata] = {
-        var map: [String: LanguageMetadata] = [:]
-        for language in all {
-            for interpreter in language.interpreters {
-                map[interpreter] = language
-            }
-        }
-        return map
-    }()
-
     // MARK: - Lookups
+    //
+    // The static lookups below delegate to ``LanguageRegistry/standard`` (which
+    // is itself built from ``all``) so there is a single lookup implementation.
+    // The behavior is identical to the previous hand-rolled indexes.
 
     /// The metadata for a language id, or `nil` if the id is not registered.
     ///
     /// - Parameter id: The language identity to look up.
     public static func metadata(for id: LanguageID) -> LanguageMetadata? {
-        byID[id]
+        LanguageRegistry.standard.metadata(for: id)
     }
 
     /// The language whose ``LanguageMetadata/fileExtensions`` contains the given
@@ -315,11 +283,7 @@ public enum LanguageCatalog {
     ///
     /// - Parameter fileExtension: An extension, with or without leading dot.
     public static func language(forExtension fileExtension: String) -> LanguageMetadata? {
-        var normalized = fileExtension.lowercased()
-        if normalized.hasPrefix(".") {
-            normalized.removeFirst()
-        }
-        return byExtension[normalized]
+        LanguageRegistry.standard.language(forExtension: fileExtension)
     }
 
     /// The language indicated by a whole file name (e.g. `"Dockerfile"`,
@@ -331,7 +295,7 @@ public enum LanguageCatalog {
     ///
     /// - Parameter filename: The file's name (not a full path).
     public static func language(forFilename filename: String) -> LanguageMetadata? {
-        byFilename[filename.lowercased()]
+        LanguageRegistry.standard.language(forFilename: filename)
     }
 
     /// The language indicated by a shebang interpreter base name (e.g.
@@ -343,6 +307,6 @@ public enum LanguageCatalog {
     ///
     /// - Parameter interpreter: The interpreter executable's base name.
     public static func language(forInterpreter interpreter: String) -> LanguageMetadata? {
-        byInterpreter[interpreter.lowercased()]
+        LanguageRegistry.standard.language(forInterpreter: interpreter)
     }
 }

@@ -9,8 +9,9 @@ import Foundation
 /// no editor behavior -- no highlight styles, no completion providers, no
 /// snippets, no LSP client construction. Those stay in the consuming editors.
 ///
-/// All string sets are compared case-insensitively by ``LanguageCatalog`` (the
-/// catalog lowercases lookups); the sets stored here are already lowercase.
+/// All string collections are compared case-insensitively by ``LanguageCatalog``
+/// and ``LanguageRegistry`` (both lowercase lookups); the values stored here are
+/// already lowercase.
 public struct LanguageMetadata: Hashable, Sendable {
     /// The language's stable identity. Unique within a ``LanguageCatalog``.
     public let id: LanguageID
@@ -19,9 +20,23 @@ public struct LanguageMetadata: Hashable, Sendable {
     public let displayName: String
 
     /// File extensions (without the leading dot, lowercase) that indicate this
-    /// language, e.g. `["c", "h"]`. Within a catalog no extension appears on
-    /// more than one language.
-    public let fileExtensions: Set<String>
+    /// language, e.g. `["c", "h"]`, in **priority order**. The first element is
+    /// the canonical / primary extension (see ``primaryFileExtension``); the
+    /// rest are recognized aliases in descending preference.
+    ///
+    /// Within a ``LanguageRegistry`` no extension appears more than once in a
+    /// single language's array, and no extension appears on more than one
+    /// language (both are validated at registry construction).
+    public let fileExtensions: [String]
+
+    /// The canonical / primary extension for this language — the first element
+    /// of ``fileExtensions`` — or `nil` if the language declares none.
+    ///
+    /// This is the extension a tool should prefer when *writing* a new file for
+    /// the language (e.g. `"rb"` for Ruby, not `"rbw"`).
+    public var primaryFileExtension: String? {
+        fileExtensions.first
+    }
 
     /// Whole file names (lowercase) that indicate this language regardless of
     /// extension, e.g. `["dockerfile"]`, `["makefile", "gnumakefile"]`,
@@ -62,7 +77,8 @@ public struct LanguageMetadata: Hashable, Sendable {
     /// - Parameters:
     ///   - id: The stable identity.
     ///   - displayName: The human-facing name.
-    ///   - fileExtensions: Lowercase, dotless extensions.
+    ///   - fileExtensions: Lowercase, dotless extensions in priority order; the
+    ///     first is the canonical / primary extension.
     ///   - filenames: Lowercase whole file names.
     ///   - interpreters: Lowercase shebang interpreter base names.
     ///   - lspIdentifier: LSP `languageId`, or `nil`.
@@ -70,7 +86,7 @@ public struct LanguageMetadata: Hashable, Sendable {
     public init(
         id: LanguageID,
         displayName: String,
-        fileExtensions: Set<String> = [],
+        fileExtensions: [String] = [],
         filenames: Set<String> = [],
         interpreters: Set<String> = [],
         lspIdentifier: String? = nil,

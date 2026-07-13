@@ -70,20 +70,19 @@ import Testing
         }
     }
 
-    /// Extensions match CodeEditorPlugin exactly, except TypeScript: RepoPrompt
-    /// wins the `tsx` extension (it becomes `.tsx`), so LanguageKit's TypeScript
-    /// lists only `["ts"]`.
+    /// Extensions match CodeEditorPlugin exactly — in the same order (CEP's
+    /// declaration order is the ground truth for ordering) — except TypeScript:
+    /// RepoPrompt wins the `tsx` extension (it becomes `.tsx`), so LanguageKit's
+    /// TypeScript lists only `["ts"]`.
     @Test func fileExtensionsMatchExceptTypeScriptTSXSplit() {
         for row in Self.cep {
             let metadata = LanguageCatalog.metadata(for: LanguageID(row.id))
-            let expected: Set<String>
             if row.id == "typescript" {
-                expected = Set(row.fileExtensions).subtracting(["tsx"])
                 #expect(metadata?.fileExtensions == ["ts"], "TypeScript should drop tsx")
             } else {
-                expected = Set(row.fileExtensions)
+                // Ordered comparison: LanguageKit preserves CEP's ordering.
+                #expect(metadata?.fileExtensions == row.fileExtensions, "fileExtensions for \(row.id)")
             }
-            #expect(metadata?.fileExtensions == expected, "fileExtensions for \(row.id)")
         }
     }
 
