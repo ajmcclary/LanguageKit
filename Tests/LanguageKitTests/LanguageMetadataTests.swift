@@ -21,7 +21,7 @@ import Testing
         #expect(metadata.primaryFileExtension == nil)
     }
 
-    /// Ordering is CodeEditorPlugin's deliberate declaration order (ground truth).
+    /// Ordering is CodeEditorKit's deliberate declaration order (ground truth).
     @Test func extensionsPreserveDeclarationOrder() {
         #expect(LanguageCatalog.metadata(for: .javascript)?.fileExtensions == ["js", "jsx", "mjs"])
         #expect(LanguageCatalog.metadata(for: .cpp)?.fileExtensions == ["cpp", "cc", "cxx", "hpp", "hh", "hxx"])

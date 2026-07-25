@@ -57,14 +57,14 @@ public struct LanguageMetadata: Hashable, Sendable {
     /// no conventional language server (the diagram DSLs, plain text) or where
     /// the source catalog documented none (``LanguageID/tsx``).
     ///
-    /// Sourced from CodeEditorPlugin's `LanguageDescriptor.lspIdentifier`.
+    /// Sourced from CodeEditorKit's `LanguageDescriptor.lspIdentifier`.
     public let lspIdentifier: String?
 
     /// The tree-sitter grammar identifier for this language, if one exists.
     ///
     /// For the 14 languages RepoPrompt parses, this is exactly the identifier
     /// RepoPrompt's grammar switch uses (the `tree_sitter_<id>()` suffix). For
-    /// CodeEditorPlugin-only languages, this is the descriptor's `parserName`
+    /// CodeEditorKit-only languages, this is the descriptor's `parserName`
     /// *when* that names a real published tree-sitter grammar; otherwise `nil`
     /// (the five diagram DSLs and plain text have no grammar).
     ///

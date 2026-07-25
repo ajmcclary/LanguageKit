@@ -3,7 +3,7 @@ import Testing
 
 /// Characterizes the LanguageKit union catalog itself against an inline literal
 /// table, so any change to the registry is a reviewable diff. The two
-/// source-catalog parity suites (`CodeEditorPluginParityTests`,
+/// source-catalog parity suites (`CodeEditorKitParityTests`,
 /// `RepoPromptParityTests`) additionally pin that this union stays faithful to
 /// each origin.
 @Suite struct LanguageCatalogTests {
@@ -102,7 +102,7 @@ import Testing
             }
         }
         // The one historically ambiguous extension resolves to `.tsx`
-        // (RepoPrompt wins over CodeEditorPlugin's `.typescript`).
+        // (RepoPrompt wins over CodeEditorKit's `.typescript`).
         #expect(owner["tsx"] == .tsx)
         #expect(owner["ts"] == .typescript)
     }

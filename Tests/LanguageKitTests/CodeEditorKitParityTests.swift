@@ -1,12 +1,12 @@
 import Testing
 @testable import LanguageKit
 
-/// Mirrors CodeEditorPlugin's Task-5 characterization table
+/// Mirrors CodeEditorKit's Task-5 characterization table
 /// (`LanguageCatalogCharacterizationTests`) and asserts the LanguageKit union
 /// still represents every one of its 31 languages faithfully -- with exactly
 /// two documented, RepoPrompt-wins deviations flagged inline.
-@Suite struct CodeEditorPluginParityTests {
-    /// A row from CodeEditorPlugin's `LanguageDescriptor` characterization
+@Suite struct CodeEditorKitParityTests {
+    /// A row from CodeEditorKit's `LanguageDescriptor` characterization
     /// table: `id` == `Language.rawValue`, `parserName` == tree-sitter grammar.
     struct CEPRow {
         let id: String
@@ -17,7 +17,7 @@ import Testing
     }
 
     // swiftlint:disable line_length
-    /// Copied verbatim from CodeEditorPlugin's characterization test (declaration order).
+    /// Copied verbatim from CodeEditorKit's characterization test (declaration order).
     static let cep: [CEPRow] = [
         CEPRow(id: "swift", displayName: "Swift", fileExtensions: ["swift"], lspIdentifier: "swift", parserName: nil),
         CEPRow(id: "javascript", displayName: "JavaScript", fileExtensions: ["js", "jsx", "mjs"], lspIdentifier: "javascript", parserName: "javascript"),
@@ -53,11 +53,11 @@ import Testing
     ]
     // swiftlint:enable line_length
 
-    @Test func everyCodeEditorPluginLanguageIsPresent() {
+    @Test func everyCodeEditorKitLanguageIsPresent() {
         for row in Self.cep {
             #expect(LanguageCatalog.metadata(for: LanguageID(row.id)) != nil, "missing \(row.id)")
         }
-        // CodeEditorPlugin has 31 languages; the union adds only RepoPrompt's tsx.
+        // CodeEditorKit has 31 languages; the union adds only RepoPrompt's tsx.
         #expect(Self.cep.count == 31)
         #expect(LanguageCatalog.all.count == Self.cep.count + 1)
     }
@@ -70,7 +70,7 @@ import Testing
         }
     }
 
-    /// Extensions match CodeEditorPlugin exactly — in the same order (CEP's
+    /// Extensions match CodeEditorKit exactly — in the same order (CEP's
     /// declaration order is the ground truth for ordering) — except TypeScript:
     /// RepoPrompt wins the `tsx` extension (it becomes `.tsx`), so LanguageKit's
     /// TypeScript lists only `["ts"]`.
@@ -86,8 +86,8 @@ import Testing
         }
     }
 
-    /// Grammar ids match CodeEditorPlugin's `parserName` exactly, except Swift:
-    /// CodeEditorPlugin uses SwiftSyntax (`parserName == nil`) but RepoPrompt
+    /// Grammar ids match CodeEditorKit's `parserName` exactly, except Swift:
+    /// CodeEditorKit uses SwiftSyntax (`parserName == nil`) but RepoPrompt
     /// parses Swift with `tree_sitter_swift()`, so RepoPrompt wins -> `"swift"`.
     @Test func grammarIdentifiersMatchExceptSwift() {
         for row in Self.cep {
@@ -103,7 +103,7 @@ import Testing
         }
     }
 
-    /// Every CodeEditorPlugin extension still resolves through the catalog to
+    /// Every CodeEditorKit extension still resolves through the catalog to
     /// the same language -- except `tsx`, which now resolves to `.tsx`.
     @Test func everyExtensionResolvesToItsLanguage() {
         for row in Self.cep {
@@ -118,7 +118,7 @@ import Testing
         }
     }
 
-    /// Mirrors CodeEditorPlugin's `LanguageDetectionService` special-filename
+    /// Mirrors CodeEditorKit's `LanguageDetectionService` special-filename
     /// table (the ones with no, or a non-language, extension). The prefix-match
     /// quirk (`dockerfile.<x>`) is intentionally not reproduced -- see the
     /// `LanguageCatalog` doc comment.

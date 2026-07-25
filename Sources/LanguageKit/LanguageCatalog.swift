@@ -7,14 +7,14 @@ import Foundation
 ///
 /// ## Sources
 ///
-/// - **CodeEditorPlugin** `LanguageDescriptor` catalog (31 languages: 30
+/// - **CodeEditorKit** `LanguageDescriptor` catalog (31 languages: 30
 ///   concrete + plain text), including the separate special-filename registry
 ///   in `LanguageDetectionService`.
 /// - **RepoPrompt** `SyntaxManager` catalog (14 languages), including its
 ///   tree-sitter grammar switch.
 ///
-/// The union is **32 languages**: CodeEditorPlugin's 31 plus RepoPrompt's
-/// ``LanguageID/tsx``, which CodeEditorPlugin did not model as a distinct
+/// The union is **32 languages**: CodeEditorKit's 31 plus RepoPrompt's
+/// ``LanguageID/tsx``, which CodeEditorKit did not model as a distinct
 /// language.
 ///
 /// ## Conflict resolution
@@ -23,7 +23,7 @@ import Foundation
 /// proven, shipping tree-sitter implementation). Every conflict found and how
 /// it was resolved:
 ///
-/// 1. **`tsx` extension owner.** CodeEditorPlugin maps the `tsx` extension to
+/// 1. **`tsx` extension owner.** CodeEditorKit maps the `tsx` extension to
 ///    ``LanguageID/typescript`` (its TypeScript descriptor lists
 ///    `["ts", "tsx"]`). RepoPrompt maps `tsx` to a *separate* `LanguageType.tsx`
 ///    with its own `tree_sitter_tsx()` grammar. **Resolution:** RepoPrompt
@@ -32,7 +32,7 @@ import Foundation
 ///    keeps every extension mapping to exactly one language.
 ///
 /// 2. **Identity-key spelling.** The two catalogs key three shared languages
-///    with different strings: JavaScript is `"javascript"` (CodeEditorPlugin)
+///    with different strings: JavaScript is `"javascript"` (CodeEditorKit)
 ///    vs `"js"` (RepoPrompt); TypeScript `"typescript"` vs `"ts"`; C#
 ///    `"csharp"` vs `"c_sharp"`. ``LanguageID`` is a brand-new identity that
 ///    neither catalog previously owned, so this is not a *metadata* conflict;
@@ -48,7 +48,7 @@ import Foundation
 /// - The 14 RepoPrompt languages use exactly the identifier RepoPrompt's
 ///   `tree_sitter_<id>()` switch uses. Two of these differ from the language's
 ///   own id: **shell**'s grammar is `"bash"` and **C#**'s is `"c_sharp"`.
-/// - CodeEditorPlugin-only languages take their descriptor's `parserName` as
+/// - CodeEditorKit-only languages take their descriptor's `parserName` as
 ///   the grammar id **only when it names a real published tree-sitter grammar**
 ///   -- true for html, css, json, markdown, yaml, xml, sql, dockerfile, toml,
 ///   lua, kotlin (and shell's `"bash"`). The five diagram DSLs (mermaid, d2,
@@ -63,19 +63,19 @@ import Foundation
 ///
 /// ## Detection quirks deliberately *not* reproduced
 ///
-/// - CodeEditorPlugin's `LanguageDetectionService` matched Dockerfiles with a
+/// - CodeEditorKit's `LanguageDetectionService` matched Dockerfiles with a
 ///   `hasPrefix("dockerfile.")` rule (so `foo.dockerfile.dev` matched). Here,
 ///   `dockerfile` is a whole-filename match and a file extension; the prefix
 ///   quirk is not carried over.
 /// - `readme` / `license` / `changelog` mapping to Markdown and
 ///   `makefile` / `gnumakefile` mapping to Shell are RepoPrompt-independent
-///   CodeEditorPlugin conventions; they are preserved as-is in ``filenames``.
+///   CodeEditorKit conventions; they are preserved as-is in ``filenames``.
 public enum LanguageCatalog {
-    /// Every registered language, in a stable declaration order (CodeEditorPlugin's
+    /// Every registered language, in a stable declaration order (CodeEditorKit's
     /// original order, with ``LanguageID/tsx`` inserted next to TypeScript).
     ///
     /// Each language's ``LanguageMetadata/fileExtensions`` is ordered: the first
-    /// element is the canonical / primary extension (matching CodeEditorPlugin's
+    /// element is the canonical / primary extension (matching CodeEditorKit's
     /// deliberate ordering and RepoPrompt's `canonicalFileExtension` for its 14
     /// languages), the rest are recognized aliases.
     public static let all: [LanguageMetadata] = [
@@ -91,7 +91,7 @@ public enum LanguageCatalog {
             lspIdentifier: "javascript", treeSitterGrammarIdentifier: "javascript"
         ),
         // Conflict #1: `tsx` moved to `.tsx` (RepoPrompt wins), so TypeScript
-        // owns only `ts` here -- CodeEditorPlugin's descriptor had `["ts", "tsx"]`.
+        // owns only `ts` here -- CodeEditorKit's descriptor had `["ts", "tsx"]`.
         LanguageMetadata(
             id: .typescript, displayName: "TypeScript",
             fileExtensions: ["ts"],
@@ -186,7 +186,7 @@ public enum LanguageCatalog {
             interpreters: ["php"],
             lspIdentifier: "php", treeSitterGrammarIdentifier: "php"
         ),
-        // Oddity carried from CodeEditorPlugin: grammar id is "bash", lsp id is
+        // Oddity carried from CodeEditorKit: grammar id is "bash", lsp id is
         // "shellscript"; neither equals the language id "shell".
         LanguageMetadata(
             id: .shell, displayName: "Shell",
@@ -212,7 +212,7 @@ public enum LanguageCatalog {
             interpreters: ["lua"],
             lspIdentifier: "lua", treeSitterGrammarIdentifier: "lua"
         ),
-        // Oddity carried from CodeEditorPlugin: grammar id is "c_sharp"
+        // Oddity carried from CodeEditorKit: grammar id is "c_sharp"
         // (matches RepoPrompt's `tree_sitter_c_sharp()`), lsp id is "csharp".
         LanguageMetadata(
             id: .csharp, displayName: "C#",

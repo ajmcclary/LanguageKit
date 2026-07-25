@@ -11,16 +11,16 @@ import Foundation
 ///
 /// ### Choosing the raw values
 ///
-/// The catalog is the union of two pre-existing catalogs (CodeEditorPlugin's
+/// The catalog is the union of two pre-existing catalogs (CodeEditorKit's
 /// `LanguageDescriptor` and RepoPrompt's `SyntaxManager`). Those two catalogs
 /// key some shared languages differently -- e.g. JavaScript is `"javascript"`
-/// in CodeEditorPlugin but `"js"` in RepoPrompt; TypeScript is `"typescript"`
+/// in CodeEditorKit but `"js"` in RepoPrompt; TypeScript is `"typescript"`
 /// vs `"ts"`; C# is `"csharp"` vs `"c_sharp"`. `LanguageID` is a *new* identity
 /// that neither catalog owned, so its raw values are chosen once here:
 ///
 /// - The descriptive, LSP-aligned form (`"javascript"`, `"typescript"`,
-///   `"csharp"`) is used, matching CodeEditorPlugin's `Language.rawValue` and
-///   its `lspIdentifier`. CodeEditorPlugin is the larger catalog (31 languages
+///   `"csharp"`) is used, matching CodeEditorKit's `Language.rawValue` and
+///   its `lspIdentifier`. CodeEditorKit is the larger catalog (31 languages
 ///   vs 14) and its identifiers double as the language-server ids consumers
 ///   already speak.
 /// - RepoPrompt's shorter enum-case names (`js` / `ts` / `c_sharp`) are *not*
@@ -111,49 +111,49 @@ public extension LanguageID {
     // MARK: - RepoPrompt-only
 
     /// TSX (TypeScript + JSX). RepoPrompt models this as a *distinct* language
-    /// (`LanguageType.tsx`) with its own tree-sitter grammar. CodeEditorPlugin
+    /// (`LanguageType.tsx`) with its own tree-sitter grammar. CodeEditorKit
     /// instead folds the `tsx` extension into ``typescript``. Per the
     /// "RepoPrompt wins" conflict policy, `.tsx` is a first-class language here
     /// and the `tsx` extension resolves to it (see ``LanguageCatalog``).
     static let tsx = LanguageID("tsx")
 
-    // MARK: - CodeEditorPlugin-only
+    // MARK: - CodeEditorKit-only
 
-    /// HTML. CodeEditorPlugin only.
+    /// HTML. CodeEditorKit only.
     static let html = LanguageID("html")
-    /// CSS (and SCSS / Sass / Less). CodeEditorPlugin only.
+    /// CSS (and SCSS / Sass / Less). CodeEditorKit only.
     static let css = LanguageID("css")
-    /// JSON. CodeEditorPlugin only.
+    /// JSON. CodeEditorKit only.
     static let json = LanguageID("json")
-    /// Markdown. CodeEditorPlugin only.
+    /// Markdown. CodeEditorKit only.
     static let markdown = LanguageID("markdown")
-    /// YAML. CodeEditorPlugin only.
+    /// YAML. CodeEditorKit only.
     static let yaml = LanguageID("yaml")
-    /// XML. CodeEditorPlugin only.
+    /// XML. CodeEditorKit only.
     static let xml = LanguageID("xml")
-    /// SQL. CodeEditorPlugin only.
+    /// SQL. CodeEditorKit only.
     static let sql = LanguageID("sql")
-    /// Shell. CodeEditorPlugin only. Note its tree-sitter grammar id is
+    /// Shell. CodeEditorKit only. Note its tree-sitter grammar id is
     /// `"bash"`, not `"shell"` (see ``LanguageCatalog``).
     static let shell = LanguageID("shell")
-    /// Dockerfile. CodeEditorPlugin only.
+    /// Dockerfile. CodeEditorKit only.
     static let dockerfile = LanguageID("dockerfile")
-    /// TOML. CodeEditorPlugin only.
+    /// TOML. CodeEditorKit only.
     static let toml = LanguageID("toml")
-    /// Lua. CodeEditorPlugin only.
+    /// Lua. CodeEditorKit only.
     static let lua = LanguageID("lua")
-    /// Kotlin. CodeEditorPlugin only.
+    /// Kotlin. CodeEditorKit only.
     static let kotlin = LanguageID("kotlin")
-    /// Mermaid diagram DSL. CodeEditorPlugin only. No tree-sitter grammar.
+    /// Mermaid diagram DSL. CodeEditorKit only. No tree-sitter grammar.
     static let mermaid = LanguageID("mermaid")
-    /// D2 diagram DSL. CodeEditorPlugin only. No tree-sitter grammar.
+    /// D2 diagram DSL. CodeEditorKit only. No tree-sitter grammar.
     static let d2 = LanguageID("d2")
-    /// Graphviz DOT. CodeEditorPlugin only. No tree-sitter grammar.
+    /// Graphviz DOT. CodeEditorKit only. No tree-sitter grammar.
     static let dot = LanguageID("dot")
-    /// Structurizr DSL. CodeEditorPlugin only. No tree-sitter grammar.
+    /// Structurizr DSL. CodeEditorKit only. No tree-sitter grammar.
     static let structurizr = LanguageID("structurizr")
-    /// PlantUML. CodeEditorPlugin only. No tree-sitter grammar.
+    /// PlantUML. CodeEditorKit only. No tree-sitter grammar.
     static let plantuml = LanguageID("plantuml")
-    /// Plain text (the fallback "language"). CodeEditorPlugin only.
+    /// Plain text (the fallback "language"). CodeEditorKit only.
     static let plainText = LanguageID("plaintext")
 }
