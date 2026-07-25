@@ -83,8 +83,9 @@ documented in full in the `LanguageCatalog` doc comment.
 
 ## Requirements
 
-- Swift 6.3+. Foundation only; no platform floor and no third-party
+- Swift 6.3+, Swift 6 language mode. Foundation only; no third-party
   dependencies.
+- Platform floor: macOS 27.0 / iOS 27.0.
 
 ## License
 

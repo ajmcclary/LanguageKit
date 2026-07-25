@@ -2,11 +2,16 @@
 import PackageDescription
 
 let swiftSettings: [SwiftSetting] = [
+    .swiftLanguageMode(.v6),
     .enableExperimentalFeature("StrictConcurrency")
 ]
 
 let package = Package(
     name: "LanguageKit",
+    platforms: [
+        .macOS("27.0"),
+        .iOS("27.0")
+    ],
     products: [
         .library(name: "LanguageKit", targets: ["LanguageKit"]),
     ],
